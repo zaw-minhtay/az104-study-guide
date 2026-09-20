@@ -1,5 +1,12 @@
 (() => {
   const QUESTIONS = window.AZ104_QUESTIONS || [];
+  const EXPLANATIONS = window.AZ104_EXPLANATIONS || {};
+  const ANSWER_ALERTS = {
+    458: 'The listed answer (B, "Protocol to UDP") looks inconsistent with real Azure load balancer behavior. Sticky sessions for the same web server are achieved via session persistence to client IP (option A), not by changing the protocol to UDP. Verify against the source PDF / discussion link.',
+    474: 'The listed answer (B, PPTP) looks inconsistent with real Azure VPN gateway behavior. Azure route-based Site-to-Site VPN gateways use IKEv1/IKEv2 (option C is IKEv2), not PPTP, which Azure VPN gateways do not support at all. Verify against the source PDF / discussion link.',
+    513: 'The listed answer (B, "the public networking type") may be inconsistent with real Azure Container Instances behavior. Private networking for ACI (and its DNS name label scope reuse features) requires the container group to use a Linux OS type, not just a networking-type setting. Verify against the source PDF / discussion link.',
+    523: 'The listed answer (B, "Networking type") may be inconsistent with real Azure Container Instances behavior. Private networking is unavailable for Windows container groups regardless of the networking-type setting, so the setting that actually needs to change is OS type (option D) to Linux. Verify against the source PDF / discussion link.',
+  };
   const STORAGE_KEY = 'az104-practice-v1';
 
   const icons = { dashboard:'⌂', practice:'✎', exam:'⏱', review:'✓' };
@@ -134,10 +141,12 @@
     if(revealed){
       const cls=isAutoGradable(q)?(correct?'correct':'wrong'):'';
       const title=isAutoGradable(q)?(correct?'Correct':'Incorrect'):'Source answer';
-      answerBox=`<div class="answer-box ${cls}"><div class="answer-title">${title}</div><div class="answer-text"><strong>Answer:</strong> ${q.answer ? escapeHtml(q.answer).replace(/\n/g,'<br>') : '<em>No answer text was found in the source PDF.</em>'}</div>${q.source_notes?`<div class="answer-meta"><span>Source note: ${escapeHtml(q.source_notes)}</span></div>`:''}<div class="answer-meta"><span>PDF page${q.source_pages[0]===q.source_pages[1]?'':'s'} ${q.source_pages.join('–')}</span>${q.discussion_url?`<a href="${escapeHtml(q.discussion_url)}" target="_blank" rel="noopener">Open discussion</a>`:''}</div></div>`;
+      const explanation=EXPLANATIONS[String(q.id)];
+      const alertMsg=ANSWER_ALERTS[q.id];
+      answerBox=`<div class="answer-box ${cls}"><div class="answer-title">${title}</div><div class="answer-text"><strong>Answer:</strong> ${q.answer ? escapeHtml(q.answer).replace(/\n/g,'<br>') : '<em>No answer text was found in the source PDF.</em>'}</div>${explanation?`<div class="answer-explanation"><strong>AI explanation:</strong> ${escapeHtml(explanation).replace(/\n/g,'<br>')}</div>`:''}${alertMsg?`<div class="answer-alert"><strong>⚠ Possible answer key error</strong>${escapeHtml(alertMsg)}</div>`:''}${q.source_notes?`<div class="answer-meta"><span>Source note: ${escapeHtml(q.source_notes)}</span></div>`:''}<div class="answer-meta"><span>PDF page${q.source_pages[0]===q.source_pages[1]?'':'s'} ${q.source_pages.join('–')}</span>${q.discussion_url?`<a href="${escapeHtml(q.discussion_url)}" target="_blank" rel="noopener">Open discussion</a>`:''}</div></div>`;
     }
     return `<div class="card question-card">
-      <div class="question-top"><div class="badges"><span class="badge blue">Topic ${q.topic}</span><span class="badge">Source Q${q.source_number}</span><span class="badge">${q.type==='single'?'Single choice':q.type==='multiple'?'Multiple choice':q.type==='hotspot'?'Hotspot':'Drag & drop'}</span>${p.correct===false?'<span class="badge yellow">Previously wrong</span>':''}</div>${!isExam?`<button class="bookmark ${p.bookmarked?'on':''}" data-bookmark="${q.id}" title="Bookmark">${p.bookmarked?'★':'☆'}</button>`:''}</div>
+      <div class="question-top"><div class="badges"><span class="badge blue">Topic ${q.topic}</span><span class="badge">Source Q${q.source_number}</span><span class="badge">${q.type==='single'?'Single choice':q.type==='multiple'?'Multiple choice':q.type==='hotspot'?'Hotspot':'Drag & drop'}</span>${p.correct===false?'<span class="badge yellow">Previously wrong</span>':''}${ANSWER_ALERTS[q.id]?'<span class="badge red">⚠ Answer key alert</span>':''}</div>${!isExam?`<button class="bookmark ${p.bookmarked?'on':''}" data-bookmark="${q.id}" title="Bookmark">${p.bookmarked?'★':'☆'}</button>`:''}</div>
       <div class="prompt">${fmtPrompt(q.prompt)}</div>
       ${questionVisuals(q)}
       ${questionChoices(q,selected,revealed,true)}
