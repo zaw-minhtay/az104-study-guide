@@ -110,6 +110,9 @@ a { color: var(--primary); }
 .answer-text { white-space: pre-wrap; line-height: 1.55; }
 .answer-meta { margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
 .answer-explanation { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: rgba(15, 108, 189, 0.08); border: 1px solid rgba(15, 108, 189, 0.18); line-height: 1.55; font-size: 14px; }
+.explanation-list { margin: 8px 0 0; padding-left: 20px; }
+.explanation-list li { margin-bottom: 6px; }
+.explanation-list li:last-child { margin-bottom: 0; }
 .answer-alert { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: var(--danger-soft); border: 1px solid #f2c3be; line-height: 1.55; font-size: 14px; color: var(--danger); }
 .answer-alert strong { display: block; margin-bottom: 4px; }
 .notice { padding: 13px 14px; border-radius: 10px; background: #eef5fb; color: #37536d; margin-top: 18px; font-size: 14px; }

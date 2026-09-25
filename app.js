@@ -144,7 +144,13 @@
       const title=isAutoGradable(q)?(correct?'Correct':'Incorrect'):'Source answer';
       const explanation=EXPLANATIONS[String(q.id)];
       const alertMsg=ANSWER_ALERTS[q.id];
-      answerBox=`<div class="answer-box ${cls}"><div class="answer-title">${title}</div><div class="answer-text"><strong>Answer:</strong> ${q.answer ? escapeHtml(q.answer).replace(/\n/g,'<br>') : '<em>No answer text was found in the source PDF.</em>'}</div>${explanation?`<div class="answer-explanation"><strong>AI explanation:</strong> ${escapeHtml(explanation).replace(/\n/g,'<br>')}</div>`:''}${alertMsg?`<div class="answer-alert"><strong>⚠ Possible answer key error</strong>${escapeHtml(alertMsg)}</div>`:''}${q.source_notes?`<div class="answer-meta"><span>Source note: ${escapeHtml(q.source_notes)}</span></div>`:''}<div class="answer-meta"><span>PDF page${q.source_pages[0]===q.source_pages[1]?'':'s'} ${q.source_pages.join('–')}</span>${q.discussion_url?`<a href="${escapeHtml(q.discussion_url)}" target="_blank" rel="noopener">Open discussion</a>`:''}</div></div>`;
+      let explanationHtml='';
+      if(Array.isArray(explanation) && explanation.length){
+        explanationHtml=`<div class="answer-explanation"><strong>AI explanation:</strong><ul class="explanation-list">${explanation.map(pt=>`<li>${escapeHtml(pt)}</li>`).join('')}</ul></div>`;
+      } else if(typeof explanation==='string' && explanation){
+        explanationHtml=`<div class="answer-explanation"><strong>AI explanation:</strong> ${escapeHtml(explanation).replace(/\n/g,'<br>')}</div>`;
+      }
+      answerBox=`<div class="answer-box ${cls}"><div class="answer-title">${title}</div><div class="answer-text"><strong>Answer:</strong> ${q.answer ? escapeHtml(q.answer).replace(/\n/g,'<br>') : '<em>No answer text was found in the source PDF.</em>'}</div>${explanationHtml}${alertMsg?`<div class="answer-alert"><strong>⚠ Possible answer key error</strong>${escapeHtml(alertMsg)}</div>`:''}${q.source_notes?`<div class="answer-meta"><span>Source note: ${escapeHtml(q.source_notes)}</span></div>`:''}<div class="answer-meta"><span>PDF page${q.source_pages[0]===q.source_pages[1]?'':'s'} ${q.source_pages.join('–')}</span>${q.discussion_url?`<a href="${escapeHtml(q.discussion_url)}" target="_blank" rel="noopener">Open discussion</a>`:''}</div></div>`;
     }
     return `<div class="card question-card">
       <div class="question-top"><div class="badges"><span class="badge blue">Topic ${q.topic}</span><span class="badge">Source Q${q.source_number}</span><span class="badge">${q.type==='single'?'Single choice':q.type==='multiple'?'Multiple choice':q.type==='hotspot'?'Hotspot':'Drag & drop'}</span>${p.correct===false?'<span class="badge yellow">Previously wrong</span>':''}${ANSWER_ALERTS[q.id]?'<span class="badge red">⚠ Answer key alert</span>':''}</div>${!isExam?`<button class="bookmark ${p.bookmarked?'on':''}" data-bookmark="${q.id}" title="Bookmark">${p.bookmarked?'★':'☆'}</button>`:''}</div>
