@@ -16,6 +16,7 @@
 
   const state = {
     view: 'dashboard',
+    sidebarOpen: false,
     progress: loadProgress(),
     practice: { topic:'all', status:'all', search:'', ids: QUESTIONS.map(q=>q.id), index:0, selected:[], revealed:false },
     reviewTab: 'wrong',
@@ -50,7 +51,7 @@
   function shell(body, title, subtitle=''){
     const nav = navItems.map(([id,label]) => `<button data-nav="${id}" class="${state.view===id?'active':''}"><span class="icon">${icons[id]}</span>${label}</button>`).join('');
     const mobile = navItems.map(([id,label]) => `<button data-nav="${id}" class="${state.view===id?'active':''}">${label}</button>`).join('');
-    return `<div class="mobile-nav">${mobile}</div><div class="shell">
+    return `<div class="mobile-nav">${mobile}</div><button class="sidebar-toggle ${state.sidebarOpen?'open':''}" data-sidebar-toggle title="${state.sidebarOpen?'Hide menu':'Show menu'}">${state.sidebarOpen?'✕':'☰'}</button><div class="shell ${state.sidebarOpen?'sidebar-open':''}">
       <aside class="sidebar">
         <div class="brand"><div class="brand-mark">AZ</div><div><div class="brand-title">AZ-104 Practice</div><div class="brand-sub">606 questions</div></div></div>
         <nav class="nav">${nav}</nav>
@@ -232,7 +233,8 @@
   }
 
   function bindCommon(){
-    document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{ state.view=b.dataset.nav; if(state.view!=='exam' && state.exam && !state.exam.finished){} render(); });
+    const st=document.querySelector('[data-sidebar-toggle]'); if(st) st.onclick=()=>{state.sidebarOpen=!state.sidebarOpen;render();};
+    document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{ state.view=b.dataset.nav; if(state.view!=='exam' && state.exam && !state.exam.finished){} state.sidebarOpen=false; render(); });
     document.querySelectorAll('[data-go="practice"]').forEach(b=>b.onclick=()=>{state.view='practice';render();});
     document.querySelectorAll('[data-go="exam"]').forEach(b=>b.onclick=()=>{state.view='exam';render();});
     document.querySelectorAll('[data-go="wrong"]').forEach(b=>b.onclick=()=>{state.reviewTab='wrong';state.view='review';render();});

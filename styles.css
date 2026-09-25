@@ -24,8 +24,11 @@ button, select, input { font: inherit; }
 button { cursor: pointer; }
 a { color: var(--primary); }
 
-.shell { min-height: 100vh; display: grid; grid-template-columns: 250px minmax(0,1fr); }
-.sidebar { position: sticky; top: 0; height: 100vh; background: #0d1b2a; color: #fff; padding: 24px 16px; display: flex; flex-direction: column; gap: 24px; }
+.shell { min-height: 100vh; display: grid; grid-template-columns: 0 minmax(0,1fr); transition: grid-template-columns .22s ease; }
+.shell.sidebar-open { grid-template-columns: 250px minmax(0,1fr); }
+.sidebar { position: sticky; top: 0; height: 100vh; min-width: 0; overflow: hidden; background: #0d1b2a; color: #fff; padding: 24px 16px; display: flex; flex-direction: column; gap: 24px; }
+.sidebar-toggle { position: fixed; top: 18px; left: 18px; z-index: 60; width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow); display: grid; place-items: center; font-size: 17px; color: var(--text); transition: left .22s ease; }
+.sidebar-toggle.open { left: 208px; }
 .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
 .brand-mark { width: 42px; height: 42px; border-radius: 11px; background: linear-gradient(135deg,#1a86d9,#57b4f2); display: grid; place-items: center; font-weight: 800; letter-spacing: -.5px; }
 .brand-title { font-weight: 800; font-size: 18px; }
@@ -151,8 +154,9 @@ a { color: var(--primary); }
 .mobile-nav { display: none; }
 
 @media (max-width: 980px) {
-  .shell { grid-template-columns: 1fr; }
+  .shell, .shell.sidebar-open { grid-template-columns: 1fr; }
   .sidebar { display: none; }
+  .sidebar-toggle { display: none; }
   .mobile-nav { display: flex; position: sticky; top: 0; z-index: 50; background: #0d1b2a; padding: 10px 12px; gap: 8px; overflow-x: auto; }
   .mobile-nav button { border: 0; background: #17334d; color: #dce7f3; padding: 9px 12px; border-radius: 9px; white-space: nowrap; }
   .mobile-nav button.active { background: var(--primary); color: #fff; }
